@@ -13,43 +13,43 @@ public class WebSocket {
 
         try {
             ServerSocket socketServer = new ServerSocket(PORT_NUMBER);
-            System.out.println("Starter server: ");
+            System.out.println("Starting server");
             Socket socket = socketServer.accept();
 
-            InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream());
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
+            InputStreamReader isr = new InputStreamReader(socket.getInputStream());
+            BufferedReader br = new BufferedReader(isr);
+            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 
             ArrayList<String> headerLines = new ArrayList<String>();
-            String aLine = bufferedReader.readLine();
-            while (aLine != null) {
-                System.out.println("Klient skrev: " + aLine);
+            String line = br.readLine();
+            while (line != null) {
+                System.out.println("Klient input: " + line);
 
-                if (aLine.equals("")) {
-                    printWriter.println("HTTP/1.1 200 OK");
-                    printWriter.println("Content-Type: text/html");
-                    printWriter.println();
-                    printWriter.println("<html><body>");
-                    printWriter.println("<h1>Hei og velkommen til en enkel webtjener</h1>");
-                    printWriter.println("Header fra klient er: ");
-                    printWriter.println("<ul>");
+                if (line.equals("")) {
+                    writer.println("HTTP/1.1 200 OK");
+                    writer.println("Content-Type: text/html");
+                    writer.println();
+                    writer.println("<html><body>");
+                    writer.println("<h1>Velkommen til en enkel web-tjener</h1>");
+                    writer.println("Header fra klient er: ");
+                    writer.println("<ul>");
 
                     for (int i = 0; i < headerLines.size(); i++) {
-                        printWriter.println("<li>" + headerLines.get(i) + "</li>");
+                        writer.println("<li>" + headerLines.get(i) + "</li>");
                     }
 
-                    printWriter.println("</ul>");
-                    printWriter.println("</body></html>");
+                    writer.println("</ul>");
+                    writer.println("</body></html>");
 
-                    bufferedReader.close();
-                    printWriter.close();
+                    br.close();
+                    writer.close();
                     socket.close();
                     return;
                 } else {
-                    headerLines.add(aLine);
+                    headerLines.add(line);
                 }
 
-                aLine = bufferedReader.readLine();
+                line = br.readLine();
             }
 
         } catch (IOException e) {
